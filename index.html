@@ -253,12 +253,9 @@
     }
     .hero-bg {
       position: absolute; inset: 0; z-index: 0;
-      background-image:
-        linear-gradient(180deg, rgba(10,9,8,0.78) 0%, rgba(10,9,8,0.92) 70%, var(--bg) 100%),
-        url('img/hero.jpg');
-      background-size: cover; background-position: center;
-      transform: scale(1.05);
-      animation: heroZoom 18s ease-out forwards;
+      background:
+        radial-gradient(ellipse at 70% 40%, rgba(212, 184, 122, 0.06), transparent 50%),
+        var(--bg);
     }
     @keyframes heroZoom { to { transform: scale(1); } }
     .hero-grain {
@@ -393,40 +390,124 @@
     .pkg .btn { margin-top: auto; }
     @media (max-width: 900px) { .pkg-grid { grid-template-columns: 1fr; } }
 
-    /* ===== PORTFOLIO ===== */
-    .gallery { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-    .gallery-item {
-      position: relative; overflow: hidden;
-      aspect-ratio: 4 / 5; cursor: pointer; background: var(--bg-soft);
+    /* ===== PORTFOLIO (carrusel de eventos) ===== */
+    .events-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 28px;
     }
-    .gallery-item img {
-      width: 100%; height: 100%; object-fit: cover;
-      transition: transform 800ms cubic-bezier(.2,.7,.2,1);
+    .event-card {
+      position: relative;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      background: var(--bg-soft);
     }
-    .gallery-item:hover img { transform: scale(1.06); }
-    .gallery-item::after {
+    .event-slides {
+      position: relative;
+      aspect-ratio: 4 / 5;
+      overflow: hidden;
+    }
+    .event-slide {
+      position: absolute; inset: 0;
+      opacity: 0;
+      transition: opacity 600ms ease;
+      pointer-events: none;
+    }
+    .event-slide.active { opacity: 1; pointer-events: auto; }
+    .event-slide img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .event-slide::after {
       content: ""; position: absolute; inset: 0;
       background: linear-gradient(180deg, transparent 50%, rgba(10,9,8,0.85) 100%);
       pointer-events: none;
     }
-    .gallery-caption {
-      position: absolute; bottom: 0; left: 0; right: 0;
-      padding: 28px; z-index: 2;
-      transform: translateY(8px); opacity: 0.92;
-      transition: transform var(--transition), opacity var(--transition);
+    .event-arrow {
+      position: absolute;
+      top: 50%; transform: translateY(-50%);
+      width: 44px; height: 44px;
+      background: rgba(10, 9, 8, 0.55);
+      border: 1px solid rgba(212, 184, 122, 0.35);
+      border-radius: 50%;
+      display: grid; place-items: center;
+      color: var(--gold);
+      cursor: pointer;
+      transition: all var(--transition);
+      z-index: 3;
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
     }
-    .gallery-item:hover .gallery-caption { transform: translateY(0); opacity: 1; }
-    .gallery-cat {
-      font-size: 0.7rem; letter-spacing: 0.22em;
-      text-transform: uppercase; color: var(--gold);
-      margin-bottom: 6px; font-weight: 500;
+    .event-arrow:hover {
+      background: rgba(10, 9, 8, 0.85);
+      border-color: var(--gold);
+      color: var(--gold-bright);
     }
-    .gallery-title {
-      font-family: var(--serif); font-size: 1.4rem;
-      color: var(--ivory); font-style: italic; font-weight: 400;
+    .event-arrow.prev { left: 16px; }
+    .event-arrow.next { right: 16px; }
+    .event-arrow svg { width: 20px; height: 20px; }
+    .event-dots {
+      position: absolute;
+      bottom: 90px; left: 0; right: 0;
+      display: flex; justify-content: center; gap: 8px;
+      z-index: 3;
     }
-    @media (max-width: 900px) { .gallery { grid-template-columns: repeat(2, 1fr); gap: 10px; } }
-    @media (max-width: 520px) { .gallery { grid-template-columns: 1fr; } }
+    .event-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: rgba(245, 235, 214, 0.4);
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      transition: all var(--transition);
+    }
+    .event-dot.active {
+      background: var(--gold);
+      width: 24px;
+      border-radius: 4px;
+    }
+    .event-caption {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      padding: 24px 28px;
+      z-index: 2;
+    }
+    .event-cat {
+      font-size: 0.7rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 6px;
+      font-weight: 500;
+    }
+    .event-title {
+      font-family: var(--serif);
+      font-size: 1.5rem;
+      color: var(--ivory);
+      font-style: italic;
+      font-weight: 400;
+    }
+    .event-counter {
+      position: absolute;
+      top: 20px; right: 20px;
+      background: rgba(10, 9, 8, 0.7);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      color: var(--ivory);
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      letter-spacing: 0.05em;
+      z-index: 3;
+      border: 1px solid rgba(212, 184, 122, 0.25);
+    }
+    @media (max-width: 760px) {
+      .events-grid { grid-template-columns: 1fr; gap: 20px; }
+      .event-arrow { width: 40px; height: 40px; }
+      .event-arrow.prev { left: 12px; }
+      .event-arrow.next { right: 12px; }
+    }
 
     /* ===== PROCESO ===== */
     .process { background: var(--bg-soft); }
@@ -832,49 +913,78 @@
           <h2>Algunos de nuestros <em>eventos</em></h2>
           <p>Una selección de producciones recientes. Cada una contó una historia distinta.</p>
         </div>
-        <div class="gallery">
-          <a href="#contacto" class="gallery-item reveal">
-            <img src="img/portfolio-1.jpg" alt="Coffee break IEA en CMA Centro Municipal de Arte" loading="lazy" width="1200" height="1500" />
-            <div class="gallery-caption">
-              <div class="gallery-cat">Coffee Break</div>
-              <div class="gallery-title">Jornada en CMA</div>
+        <div class="events-grid">
+
+          <!-- Evento 1: Coffee Break — Jornada en CMA -->
+          <article class="event-card reveal" data-event="cma">
+            <div class="event-slides">
+              <div class="event-slide active">
+                <img src="img/portfolio-1.jpg" alt="Coffee break IEA en CMA Centro Municipal de Arte" loading="lazy" width="1200" height="1500" />
+              </div>
+              <div class="event-slide">
+                <img src="img/portfolio-2.jpg" alt="Servicio de catering coffee break IEA" loading="lazy" width="1200" height="1500" />
+              </div>
+              <div class="event-slide">
+                <img src="img/portfolio-3.jpg" alt="Mesa de coffee break con catering en jornada IEA" loading="lazy" width="1200" height="1500" />
+              </div>
+
+              <span class="event-counter"><span class="current">1</span> / 3</span>
+
+              <button class="event-arrow prev" aria-label="Foto anterior">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+              </button>
+              <button class="event-arrow next" aria-label="Foto siguiente">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+              </button>
+
+              <div class="event-dots">
+                <button class="event-dot active" aria-label="Foto 1"></button>
+                <button class="event-dot" aria-label="Foto 2"></button>
+                <button class="event-dot" aria-label="Foto 3"></button>
+              </div>
+
+              <div class="event-caption">
+                <div class="event-cat">Coffee Break</div>
+                <div class="event-title">Jornada en CMA</div>
+              </div>
             </div>
-          </a>
-          <a href="#contacto" class="gallery-item reveal reveal-delay-1">
-            <img src="img/portfolio-2.jpg" alt="Servicio de catering coffee break IEA" loading="lazy" width="1200" height="1500" />
-            <div class="gallery-caption">
-              <div class="gallery-cat">Coffee Break</div>
-              <div class="gallery-title">Jornada en CMA</div>
+          </article>
+
+          <!-- Evento 2: Ronda de negocios — IEA Vicente López -->
+          <article class="event-card reveal reveal-delay-1" data-event="vlopez">
+            <div class="event-slides">
+              <div class="event-slide active">
+                <img src="img/portfolio-4.jpg" alt="Ronda de negocios IEA Vicente López" loading="lazy" width="1200" height="1500" />
+              </div>
+              <div class="event-slide">
+                <img src="img/portfolio-5.jpg" alt="Presentación en ronda de negocios IEA" loading="lazy" width="1200" height="1500" />
+              </div>
+              <div class="event-slide">
+                <img src="img/portfolio-6.jpg" alt="Stands en ronda de negocios IEA Vicente López" loading="lazy" width="1200" height="1500" />
+              </div>
+
+              <span class="event-counter"><span class="current">1</span> / 3</span>
+
+              <button class="event-arrow prev" aria-label="Foto anterior">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+              </button>
+              <button class="event-arrow next" aria-label="Foto siguiente">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+              </button>
+
+              <div class="event-dots">
+                <button class="event-dot active" aria-label="Foto 1"></button>
+                <button class="event-dot" aria-label="Foto 2"></button>
+                <button class="event-dot" aria-label="Foto 3"></button>
+              </div>
+
+              <div class="event-caption">
+                <div class="event-cat">Ronda de negocios</div>
+                <div class="event-title">IEA Vicente López</div>
+              </div>
             </div>
-          </a>
-          <a href="#contacto" class="gallery-item reveal reveal-delay-2">
-            <img src="img/portfolio-3.jpg" alt="Mesa de coffee break con catering en jornada IEA" loading="lazy" width="1200" height="1500" />
-            <div class="gallery-caption">
-              <div class="gallery-cat">Coffee Break</div>
-              <div class="gallery-title">Jornada en CMA</div>
-            </div>
-          </a>
-          <a href="#contacto" class="gallery-item reveal">
-            <img src="img/portfolio-4.jpg" alt="Ronda de negocios IEA Vicente López" loading="lazy" width="1200" height="1500" />
-            <div class="gallery-caption">
-              <div class="gallery-cat">Ronda de negocios</div>
-              <div class="gallery-title">IEA Vicente López</div>
-            </div>
-          </a>
-          <a href="#contacto" class="gallery-item reveal reveal-delay-1">
-            <img src="img/portfolio-5.jpg" alt="Presentación en ronda de negocios IEA" loading="lazy" width="1200" height="1500" />
-            <div class="gallery-caption">
-              <div class="gallery-cat">Ronda de negocios</div>
-              <div class="gallery-title">IEA Vicente López</div>
-            </div>
-          </a>
-          <a href="#contacto" class="gallery-item reveal reveal-delay-2">
-            <img src="img/portfolio-6.jpg" alt="Stands en ronda de negocios IEA Vicente López" loading="lazy" width="1200" height="1500" />
-            <div class="gallery-caption">
-              <div class="gallery-cat">Ronda de negocios</div>
-              <div class="gallery-title">IEA Vicente López</div>
-            </div>
-          </a>
+          </article>
+
         </div>
       </div>
     </section>
@@ -1199,6 +1309,37 @@
     }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
 
     document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+    // Carrusel de eventos del portfolio
+    document.querySelectorAll('.event-card').forEach(card => {
+      const slides = card.querySelectorAll('.event-slide');
+      const dots   = card.querySelectorAll('.event-dot');
+      const counter = card.querySelector('.event-counter .current');
+      const prev = card.querySelector('.event-arrow.prev');
+      const next = card.querySelector('.event-arrow.next');
+      let i = 0;
+
+      function show(n) {
+        i = (n + slides.length) % slides.length;
+        slides.forEach((s, k) => s.classList.toggle('active', k === i));
+        dots.forEach((d, k) => d.classList.toggle('active', k === i));
+        if (counter) counter.textContent = i + 1;
+      }
+
+      prev.addEventListener('click', () => show(i - 1));
+      next.addEventListener('click', () => show(i + 1));
+      dots.forEach((d, k) => d.addEventListener('click', () => show(k)));
+
+      // Swipe en mobile
+      let startX = null;
+      card.addEventListener('touchstart', e => { startX = e.touches[0].clientX; }, { passive: true });
+      card.addEventListener('touchend', e => {
+        if (startX === null) return;
+        const dx = e.changedTouches[0].clientX - startX;
+        if (Math.abs(dx) > 40) show(dx < 0 ? i + 1 : i - 1);
+        startX = null;
+      }, { passive: true });
+    });
   </script>
 </body>
 </html>
